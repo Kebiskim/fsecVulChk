@@ -1,0 +1,5 @@
+# Windows download artifacts (NTFS ADS streams exposed under WSL)
+*:Zone.Identifier
+
+# local logs / scratch output if ever generated in-tree
+*.log
