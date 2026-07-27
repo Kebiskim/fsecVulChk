@@ -35,7 +35,9 @@ srv_016() {  # Methods x3: 1)rpc processes 2)rpcinfo -p 3)inetd.conf
     is_apply && { svc_off rpcbind; svc_off rpcbind.socket; }
     local RPCS='cmsd|ttdbserverd|sadmind|rusersd|walld|sprayd|rstatd|nisd|rexd|pcnfsd|statd|ypupdated|rquotad|kcms_server|cachefsd'
     local r1="not found" r2 r3="not found"
-    pgrep -f "rpc\.|rusersd|walld|sprayd|rstatd|rexd|sadmind|kcms_server|cachefsd" >/dev/null 2>&1 && r1=found
+    # match only the vulnerable RPCS daemons (same list as methods 2-3); a bare 'rpc\.'
+    # would also catch benign NFS client helpers (rpc.idmapd/rpc.gssd) -> false positive
+    pgrep -f "(${RPCS})" >/dev/null 2>&1 && r1=found
     note SRV-016 "Method 1) rpc-family processes: ${r1}"
     if command -v rpcinfo >/dev/null 2>&1; then
         r2="not found"; rpcinfo -p 2>/dev/null | grep -qEw "$RPCS" && r2=found
